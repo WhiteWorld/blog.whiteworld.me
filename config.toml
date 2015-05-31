@@ -1,4 +1,4 @@
-baseurl = "http://test.whiteworld.me/"
+baseurl = "http://blog.whiteworld.me/"
 languageCode = "en-us"
 title = "My New Hugo Site"
 theme = "hyde"
