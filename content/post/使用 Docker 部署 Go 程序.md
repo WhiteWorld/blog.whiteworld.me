@@ -18,7 +18,7 @@
 
 Go 是二进制部署，本身比较简单，结合 Docker 进行部署也比较容易。
 
-1.编写 Dockerfile 文件，以部署 [zlist](https://github.com/WhiteWorld/zlist) 为例，Dockerfile 如下：
+1.编写 Dockerfile 文件，以部署 [zlist](https://github.com/zlisthq/zlist) 为例，Dockerfile 如下：
 
 ```dockerfile
 # zlist
@@ -30,12 +30,12 @@ MAINTAINER Whiteworld <ljq258@gmail.com>
 FROM golang
 
 # 直接从 github 上安装 Go 程序。如果要部署的 Go 应用代码没有公开在网上，可以使用下面注释的 ADD 和 RUN go install 代替 RUN go get
-# ADD . /go/src/github.com/WhiteWorld/zlist
-# RUN go install github.com/WhiteWorld/zlist
-RUN go get github.com/WhiteWorld/zlist
+# ADD . /go/src/github.com/zlisthq/zlist
+# RUN go install github.com/zlisthq/zlist
+RUN go get github.com/zlisthq/zlist
 
 # 如果源码里使用了相对路径，使用 WORKDIR 切换工作目录
-WORKDIR /go/src/github.com/WhiteWorld/zlist
+WORKDIR /go/src/github.com/zlisthq/zlist
 
 # 指定容器启动时运行的命令
 ENTRYPOINT /go/bin/zlist
