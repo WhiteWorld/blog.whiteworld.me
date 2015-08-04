@@ -95,7 +95,102 @@ func main() {
 ```
 文件介绍
 
+tar
+
 - common.go 提供常量和通用函数的定义
 - reader.go 提供对 tar 文件的访问
 - writer.go 提供对 tar 文件的写
+
+
+zip 提供对 zip 格式的文件的读写操作
+
+```go
+// Copyright 2012 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+package main
+
+import (
+    "archive/zip"
+    "bytes"
+    "fmt"
+    "io"
+    "io/ioutil"
+    "log"
+    "os"
+)
+
+func ExampleWriter() {
+    // Create a buffer to write our archive to.
+    buf := new(bytes.Buffer)
+
+    // Create a new zip archive.
+    w := zip.NewWriter(buf)
+
+    // Add some files to the archive.
+    var files = []struct {
+        Name, Body string
+    }{
+        {"readme.txt", "This archive contains some text files."},
+        {"gopher.txt", "Gopher names:\nGeorge\nGeoffrey\nGonzo"},
+        {"todo.txt", "Get animal handling licence.\nWrite more examples."},
+    }
+    for _, file := range files {
+        f, err := w.Create(file.Name)
+        if err != nil {
+            log.Fatal(err)
+        }
+        _, err = f.Write([]byte(file.Body))
+        if err != nil {
+            log.Fatal(err)
+        }
+    }
+
+    // Make sure to check the error on Close.
+    err := w.Close()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Write to file
+    if err := ioutil.WriteFile("1.zip", buf.Bytes(), 0644); err != nil {
+        log.Fatalln(err)
+    }
+}
+
+func ExampleReader() {
+    // Open a zip archive for reading.
+    r, err := zip.OpenReader("testdata/readme.zip")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer r.Close()
+
+    // Iterate through the files in the archive,
+    // printing some of their contents.
+    for _, f := range r.File {
+        fmt.Printf("Contents of %s:\n", f.Name)
+        rc, err := f.Open()
+        if err != nil {
+            log.Fatal(err)
+        }
+        _, err = io.CopyN(os.Stdout, rc, 68)
+        if err != nil {
+            log.Fatal(err)
+        }
+        rc.Close()
+        fmt.Println()
+    }
+    // Output:
+    // Contents of README:
+    // This is the source code repository for the Go programming language.
+}
+
+func main() {
+    ExampleReader()
+    ExampleWriter()
+}
+```
+
 
